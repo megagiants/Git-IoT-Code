@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, session, logging
 import mysql.connector
+import logging
 #from flask_cors import CORS
 
 app = Flask(__name__)
