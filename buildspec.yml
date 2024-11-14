@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.10  # 원하는 Python 버전으로 수정하세요
+    commands:
+      - echo "Installing dependencies"
+      - pip install -r requirements.txt  # 필요한 패키지가 나열된 requirements 파일이 있어야 합니다
+
+  pre_build:
+    commands:
+      - echo "Starting pre-build"
+
+  build:
+    commands:
+      - echo "Building the application"
+      - python app.py  # 필요 시 변경하세요
+
+  post_build:
+    commands:
+      - echo "Build complete"
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: no
+  base-directory: ./
+  name: prd_build.zip  # 아티팩트 이름을 설정할 수 있습니다
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: .  # 빌드 파일 경로 설정
+  name: app_build.zip
+  discard-paths: no
+  destination: prd-iot-build
