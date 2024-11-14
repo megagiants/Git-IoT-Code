@@ -6,6 +6,7 @@ phases:
       python: 3.10  # 원하는 Python 버전으로 수정하세요
     commands:
       - echo "Installing dependencies"
+      - yum install -y bind-utils
       - pip install -r requirements.txt  # 필요한 패키지가 나열된 requirements 파일이 있어야 합니다
 
   pre_build:
