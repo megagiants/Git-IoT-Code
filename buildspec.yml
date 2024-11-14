@@ -18,7 +18,7 @@ phases:
       - echo "Testing DNS resolution and connectivity"
       - nslookup user.c5keiyccyg3f.ap-northeast-2.rds.amazonaws.com  # RDS 엔드포인트를 입력하세요
       - echo "Building the application"
-      - python app.py  # 필요 시 변경하세요
+      - gunicorn --bind 127.0.0.1:1212 app:app
 
   post_build:
     commands:
