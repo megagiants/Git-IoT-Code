@@ -1,0 +1,27 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/myflaskapp
+
+hooks:
+  AfterInstall:
+    - location: scripts/configure_nginx.sh  # 스크립트 경로를 지정
+      timeout: 60
+      runas: root
+  ApplicationStart:
+    - location: scripts/start_server.sh  # Gunicorn 서버 시작
+      timeout: 60
+      runas: root
+  ValidateService:
+    - location: scripts/validate_service.sh  # 애플리케이션 상태 확인
+      timeout: 30
+      runas: root
+  ApplicationStart:
+    - location: /home/ec2-user/app/create_gunicorn_service.sh
+      timeout: 60
+      runas: root
+  ApplicationStart:
+    - location: /home/ec2-user/app/create_flask_nginx_config.sh
+      timeout: 60
+      runas: root
