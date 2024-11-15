@@ -7,6 +7,7 @@ phases:
     commands:
       - echo "Installing dependencies"
       - yum install -y bind-utils
+      - yum install -y nginx
       - pip install -r requirements.txt
 
   pre_build:
@@ -16,9 +17,7 @@ phases:
   build:
     commands:
       - echo "Testing DNS resolution and connectivity"
-      - python test_rds_connection.py
-      - echo "Building the application"
-      - gunicorn --bind 127.0.0.1:1212 app:app --daemon
+      - zip -r app_build.zip ./*
 
   post_build:
     commands:
