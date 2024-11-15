@@ -3,20 +3,65 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.10  # 원하는 Python 버전으로 수정하세요
+      python: 3.10
     commands:
-      - echo "Installing dependencies"
+      - echo "Updating system and installing Python, Flask, and Gunicorn"
+      - yum update -y
+      - yum update -y python3
       - yum install -y bind-utils
-      - pip install -r requirements.txt  # 필요한 패키지가 나열된 requirements 파일이 있어야 합니다
+      - yum install -y nginx
+      - pip install -r requirements.txt
+      - systemctl start nginx
+      - systemctl enable nginx
 
   pre_build:
     commands:
       - echo "Starting pre-build"
+      - mkdir -p /root/myflaskapp
+      - cp app.py /root/myflaskapp/app.py
 
   build:
     commands:
-      - echo "Creating deployment package"
-      - zip -r app_build.zip ./*
+      - echo "Configuring nginx and gunicorn service"
+      - sed -i 's/listen       80;/listen       81;/g' /etc/nginx/nginx.conf
+      - sed -i '/types_hash_max_size 4096;/a \ \ \ \ server_names_hash_bucket_size 128;' /etc/nginx/nginx.conf
+      - |
+        cat <<EOT > /etc/nginx/conf.d/flask_app.conf
+        server {
+            listen 81;
+            server_name RPD-IoT-ALB-1582427384.ap-northeast-2.elb.amazonaws.com;
+
+            location / {
+                proxy_pass http://127.0.0.1:1212;
+                proxy_set_header Host \$host;
+                proxy_set_header X-Real-IP \$remote_addr;
+                proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto \$scheme;
+                add_header 'Access-Control-Allow-Origin' 'https://mega-giants.click';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            }
+        }
+        EOT
+      - |
+        cat <<EOT > /etc/systemd/system/gunicorn.service
+        [Unit]
+        Description=gunicorn daemon for Flask app
+        After=network.target
+
+        [Service]
+        User=root
+        Group=root
+        WorkingDirectory=/root/myflaskapp
+        ExecStart=/usr/local/bin/gunicorn --workers 3 --bind 127.0.0.1:1212 app:app
+
+        [Install]
+        WantedBy=multi-user.target
+        EOT
+      - echo "Starting nginx"
+      - nginx -g 'daemon off;' &
+      - echo "Starting Gunicorn"
+      - gunicorn --bind 127.0.0.1:1212 app:app &
 
   post_build:
     commands:
