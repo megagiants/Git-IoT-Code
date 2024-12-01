@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link rel="stylesheet" href="https://static.mega-giants.click/index.css">
+</head>
+<body>
+    <div class="container my-page-screen" id="myPageScreen">
+        <h2>마이페이지</h2>
+        <p>ID: <span id="userNameDisplay">{{ user_id }}</span></p>
+        <p>이름: <span id="userRealNameDisplay">{{ user_name }}</span></p>
+        <p>연락처: <span id="userContactDisplay">{{ user_contact }}</span></p>
+        <button class="back-btn" onclick="window.location.href='/dashboard'">뒤로가기</button>
+        <button class="logout-btn" onclick="logout()">로그아웃</button>
+    </div>
+    <script src="https://static.mega-giants.click/script.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const myPageScreen = document.getElementById("myPageScreen");
+        if (myPageScreen) {
+            myPageScreen.style.display = "block"; // 화면 활성화
+        }
+
+        fetch("/check_login")
+            .then(res => res.json())
+            .then(data => {
+                if (data.logged_in) {
+                    document.getElementById('userNameDisplay').innerText = data.user_name || "알 수 없음";
+                    document.getElementById('userRealNameDisplay').innerText = data.user_name || "알 수 없음";
+                    document.getElementById('userContactDisplay').innerText = data.user_contact || "알 수 없음";
+                } else {
+                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                    window.location.href = "/";
+                }
+            })
+            .catch(err => console.error("Error loading my page:", err));
+    });
+    </script>
+</body>
+</html>

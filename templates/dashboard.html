@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://static.mega-giants.click/index.css">
+</head>
+<body>
+    <div class="container" id="deviceDashboard">
+        <div class="device-card" data-section="livingRoom">
+            <div>
+                <h2>조명</h2>
+            </div>
+            <button class="toggle-btn" onclick="toggleLight(this)"></button>
+        </div>
+        <div class="device-card" data-section="livingRoom">
+            <div>
+                <h2>에어컨</h2>
+                <p id="acSettings"></p>
+            </div>
+            <button class="toggle-btn" onclick="toggleAir(this); openModal('acModal')"></button>
+        </div>
+        <button class="button my-page-btn" onclick="window.location.href='/mypage'">마이페이지</button>
+        <button class="button logout-btn" onclick="logout()">로그아웃</button>
+    </div>
+
+    <div id="acModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('acModal')">&times;</span>
+            <h2>에어컨 설정</h2>
+            <label>온도 조절: <input type="number" id="acTemperature" min="16" max="30"> °C</label>
+            <label>예약 설정: <input type="time" id="acSchedule"></label>
+            <button onclick="saveACSettings()">저장</button>
+        </div>
+    </div>
+    <script src="https://static.mega-giants.click/script.js"></script>
+</body>
+</html>
