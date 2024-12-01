@@ -1,32 +1,13 @@
 version: 0.2
-
 phases:
   install:
-    runtime-versions:
-      python: 3.10
     commands:
-      - echo "Installing dependencies"
-      - yum install -y bind-utils
-      - yum install -y nginx
-      - pip install -r requirements.txt
-
-  pre_build:
-    commands:
-      - echo "Starting pre-build"
-
+      - echo "No dependencies to install for this build."
   build:
     commands:
-      - echo "Testing DNS resolution and connectivity"
-      - zip -r app_build.zip ./*
-
-  post_build:
-    commands:
-      - echo "Build complete"
-
+      - echo "No build commands necessary for this pipeline."
 artifacts:
   files:
-    - '**/*'
-  base-directory: .
-  name: app_build.zip
-  discard-paths: no
-  destination: prd-iot-build
+    - app.py
+    - templates/**  # templates 폴더 내 모든 파일 포함
+  discard-paths: no  # 파일의 원래 경로를 유지
