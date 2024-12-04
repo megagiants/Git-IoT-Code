@@ -8,5 +8,6 @@ phases:
       - echo "No build commands necessary for this pipeline."
 artifacts:
   files:
+    - appspec.yml
     - templates/**  # templates 폴더 내 모든 파일 포함
   discard-paths: no  # 파일의 원래 경로를 유지
